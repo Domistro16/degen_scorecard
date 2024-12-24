@@ -1,0 +1,23 @@
+{
+    "name": "txapp",
+    "version": "1.0.0",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "@covalenthq/client-sdk": "^2.2.2",
+        "@types/node": "^22.9.1",
+        "axios": "^1.7.9",
+        "canvas": "^2.11.2",
+        "discord": "^0.8.2",
+        "discord.js": "^14.16.3",
+        "dotenv": "^16.4.5",
+        "nodemon": "^3.1.9"
+    }
+}
