@@ -34,6 +34,7 @@ const getWhaleStatus = (balance, totalSupply) => {
 };
 
 const api_key = process.env.COVALENT_API || ''
+const key = process.env.API_KEY
 
 const NFT_API_URL = "https://api.covalenthq.com/v1/sei-mainnet/address/";
 const NFT_B_API_URL = "https://api.covalenthq.com/v1/sei-mainnet/address/"
@@ -87,7 +88,7 @@ const calculateWalletVolume = async(transactions) => {
 const getPrice = async (address) => {
     const options = {
         method: 'GET',
-        headers: {accept: '*/*', 'x-api-key': 'aaaf7203-f266-5288-9896-8f9eaefc8a3f'}
+        headers: {accept: '*/*', 'x-api-key': `${key|| ''}`}
     };
     const url = `https://api-sei.reservoir.tools/collections/v7?id=${address}`;
     const response = await axios(url, options);
