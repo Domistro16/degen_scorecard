@@ -1,6 +1,6 @@
 import { Client, GatewayIntentBits, AttachmentBuilder } from "discord.js";
 import axios from 'axios';
-import { createCanvas, loadImage } from 'canvas';
+import { createCanvas, loadImage, registerFont } from 'canvas';
 import 'dotenv/config';
 
 const client = new Client({
@@ -278,6 +278,7 @@ client.on('messageCreate', async (msg) => {
             console.log(balance, status)
             console.log("volume", volume)
         if(response){
+            registerFont('./Poppins-Bold.ttf', {family: 'Poppins'});
             const canvas = createCanvas(850, 480); // Adjust the size as needed
             const ctx = canvas.getContext('2d');
 
@@ -287,7 +288,7 @@ client.on('messageCreate', async (msg) => {
         ctx.drawImage(overlayImage, 30 , 80, 150, 150);
     
     // Set text properties
-    ctx.font = 'bold 25px sans-seriff';
+    ctx.font = '25px Poppins';
     ctx.fillStyle = '#333333';
     // Draw balance under nftbalance
     ctx.fillText(`${balance} SEI`, 125, 410); // Adjust coordinates as needed
