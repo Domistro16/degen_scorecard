@@ -88,6 +88,7 @@ const sei_key = process.env.KEY || ''
 const getFirstNft = async (items, address) => {
 
     let nftsArray = []
+    console.log(sei_key);
     for (const item of items){
     const options = {
         method: 'GET',
