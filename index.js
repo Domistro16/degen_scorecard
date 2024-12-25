@@ -79,12 +79,36 @@ const calculateWalletVolume = async(transactions) => {
 
       await delay(1000);
     }
+    console.log(allResults);
     const response = await calculateWalletVolume(allResults);
     console.log(response);
     return response || 0;
   }
+const sei_key = process.env.KEY || ''
+const getFirstNft = async (items, address) => {
 
+    let nftsArray = []
+    for (const item of items){
+    const options = {
+        method: 'GET',
+        header: {accept: 'application/json', 'X-API-KEY': `${key}` }
+    }
 
+    const response = await axios(`https://seitrace.com/insights/api/v2/token/erc721/transfers?offset=0&chain_id=pacific-1&contract_address=${item.contract_address}&wallet_address=${address}`, options)
+    const nft = sortArray(response.data.items, "timestamp");
+
+    const n = {
+        name: nft.token_instance.token_name,
+        timestamp: nft.timestamp
+    }
+    nftsArray.push(n);
+}
+
+    const firstNft = sortArray(nftsArray, "timestamp");
+
+    return firstNft;
+
+}
 const getPrice = async (address) => {
     const options = {
         method: 'GET',
@@ -177,15 +201,17 @@ const getCoins = async (address) => {
         return 0;
     }
 };
-const sortArray = (items) => {
+const sortArray = (items, sort) => {
     items.sort((a, b) => {
-        const dateA = new Date(a["last-transferred-at"]);
-        const dateB = new Date(b["last-transferred-at"]);
+        const dateA = new Date(a[sort]);
+        const dateB = new Date(b[sort]);
         return dateA - dateB; // Sort in ascending order
       });
 
       return items[0];
 }
+
+
 const getNfts = async (address) => {
     try {
         // Define the request URL and headers
@@ -202,7 +228,6 @@ const getNfts = async (address) => {
 
         let nftBalance = 0;
         let WhaleArray = [];
-        let fnft;
         if (response.data.data && response.data.data.items) {
             const items = response.data.data.items;
             let balance = 0;
@@ -221,7 +246,6 @@ const getNfts = async (address) => {
                 await delay(2000);
             }
             nftBalance = balance;
-            fnft = items[0];
         } else {
             console.log("No items found in response data");
         }
@@ -239,9 +263,9 @@ const getNfts = async (address) => {
         }else{ status = "PLEB"}
     }
         const mresponse = await fetchPaginatedData(`https://api.covalenthq.com/v1/sei-mainnet/bulk/transactions/${address}/`)
-        
+        const fnft = getFirstNfts(items, address);
         console.log("first NFT", fnft)
-        const nft = fnft.contract_name
+        const nft = fnft.name
         return {nftBalance, status, nft, mresponse};
     } catch (error) {
         console.error("Error fetching NFTs:", error);
