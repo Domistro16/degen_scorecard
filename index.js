@@ -16,10 +16,7 @@ const WHALE_STATUS = {
 };
 
 const getWhaleStatus = (balance, totalSupply) => {
-    console.log("b",  balance);
-    console.log("ts", totalSupply);
-    const percentage = (balance / totalSupply) * 100; // Convert to percentage
-    console.log("percentage:", percentage)
+    const percentage = (balance / totalSupply) * 100; 
     if (percentage <= WHALE_STATUS.PLEB.min || percentage == Infinity) {
         return WHALE_STATUS.PLEB;
     } else if (percentage <= WHALE_STATUS.FISH.min) {
@@ -44,6 +41,7 @@ const calculateWalletVolume = async(transactions) => {
     const totalVolume = transactions.reduce((total, transaction) => {
       return total + (parseFloat(transaction.value)/ Math.pow(10, 18) || 0); // Ensure no `undefined` values
     }, 0);
+
     let memeVolume = 0;
     // /* for(const item of transactions){
     //     if(item.log_events.supports_erc == "erc-20"){
@@ -79,39 +77,37 @@ const calculateWalletVolume = async(transactions) => {
 
       await delay(1000);
     }
-    console.log(allResults);
     const response = await calculateWalletVolume(allResults);
-    console.log(response);
     return response || 0;
   }
 const sei_key = process.env.KEY || ''
 const getFirstNft = async (items, address) => {
-
     let nftsArray = []
     for (const item of items){
-        if(item.supports_erc.find((element) => element == "erc-721")){
+        console.log("item", item.supports_erc)
+        if(item.supports_erc.includes("erc721")){
+
     const options = {
         method: 'GET',
         headers: {accept: 'application/json', 'x-api-key': `${sei_key}` }
     }
 
     const response = await axios(`https://seitrace.com/insights/api/v2/token/erc721/transfers?offset=0&chain_id=pacific-1&contract_address=${item.contract_address}&wallet_address=${address}`, options)
-    const nft = sortArray(response.data.items, "timestamp");
-    console.log("nft:", nft)
+    const nft = sortArray(response.data.items);
     const n = {
         name: nft.token_instance.token_name,
         timestamp: nft.timestamp
     }
     nftsArray.push(n);
-} else if(item.supports_erc.find((element) => element == "erc-1155")){
+} else if(item.supports_erc.includes("erc1155")){
     const options = {
         method: 'GET',
         headers: {accept: 'application/json', 'x-api-key': `${sei_key}` }
     }
 
     const response = await axios(`https://seitrace.com/insights/api/v2/token/erc1155/transfers?offset=0&chain_id=pacific-1&contract_address=${item.contract_address}&wallet_address=${address}`, options)
-    const nft = sortArray(response.data.items, "timestamp");
-    console.log("nft:", nft)
+    const items = response.data.items;
+    const nft = sortArray(items);
     const n = {
         name: nft.token_instance.token_name,
         timestamp: nft.timestamp
@@ -121,8 +117,7 @@ const getFirstNft = async (items, address) => {
     
     await delay(500);
 }
-    const firstNft = sortArray(nftsArray, "timestamp");
-    console.log(firstNft);
+    const firstNft = sortArray(nftsArray);
     return firstNft;
 
 }
@@ -135,7 +130,6 @@ const getPrice = async (address) => {
     const response = await axios(url, options);
 
     const collection = response.data.collections[0];
-    console.log(collection);
     let floorPriceDecimal = 0;
     let floorPriceNative = 0;
 
@@ -218,10 +212,10 @@ const getCoins = async (address) => {
         return 0;
     }
 };
-const sortArray = (items, sort) => {
+const sortArray = (items) => {
     items.sort((a, b) => {
-        const dateA = new Date(a[sort]);
-        const dateB = new Date(b[sort]);
+        const dateA = new Date(a["timestamp"]);
+        const dateB = new Date(b["timestamp"]);
         return dateA - dateB; // Sort in ascending order
       });
 
@@ -241,7 +235,6 @@ const getNfts = async (address) => {
         // Make the API call with axios
         const response = await axios.get(url, options);
 
-        console.log("response", response.data); // Log the full response to debug
 
         let nftBalance = 0;
         let WhaleArray = [];
@@ -253,7 +246,6 @@ const getNfts = async (address) => {
             for (const item of items) {
                 if (item.nft_data && item.nft_data.length > 0) {
                     const response = await getPrice(item.contract_address); // Assuming this function exists
-                    console.log("price:" , response.floorPriceNative);
                     const price = response.floorPriceNative;
                     const totalPrice = item.balance * price;
                     const status = getWhaleStatus(parseFloat(item.balance), parseFloat(response.supply));
@@ -283,7 +275,6 @@ const getNfts = async (address) => {
         }else{ status = "PLEB"}
     }
     const mresponse = await fetchPaginatedData(`https://api.covalenthq.com/v1/sei-mainnet/bulk/transactions/${address}/`)
-        console.log("first NFT", fnft)
         const nft = fnft.name
         return {nftBalance, status, nft, mresponse};
     } catch (error) {
@@ -318,8 +309,6 @@ client.on('messageCreate', async (msg) => {
         const status = response.status;
         const fnft = response.nft;
         const volume = Math.ceil(response.mresponse * 1000) / 10000;
-            console.log(balance, status)
-            console.log("volume", volume)
         if(response){
             registerFont('./Poppins-Bold.ttf', {family: 'Poppins'});
             const canvas = createCanvas(850, 480); // Adjust the size as needed
