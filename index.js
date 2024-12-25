@@ -275,7 +275,13 @@ const getNfts = async (address) => {
         }else{ status = "PLEB"}
     }
     const mresponse = await fetchPaginatedData(`https://api.covalenthq.com/v1/sei-mainnet/bulk/transactions/${address}/`)
-        const nft = fnft.name
+        let nft = '';
+        if(fnft != undefined){
+             nft = fnft.name
+        }
+        else{
+            nft = ""
+        }
         return {nftBalance, status, nft, mresponse};
     } catch (error) {
         console.error("Error fetching NFTs:", error);
