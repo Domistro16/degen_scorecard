@@ -102,6 +102,7 @@ const getFirstNft = async (items, address) => {
         timestamp: nft.timestamp
     }
     nftsArray.push(n);
+    await delay(500);
 }
 
     const firstNft = sortArray(nftsArray, "timestamp");
