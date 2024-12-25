@@ -229,6 +229,7 @@ const getNfts = async (address) => {
 
         let nftBalance = 0;
         let WhaleArray = [];
+        let fnft;
         if (response.data.data && response.data.data.items) {
             const items = response.data.data.items;
             let balance = 0;
@@ -247,6 +248,8 @@ const getNfts = async (address) => {
                 await delay(2000);
             }
             nftBalance = balance;
+            fnft = await getFirstNft(items, address);
+
         } else {
             console.log("No items found in response data");
         }
@@ -263,8 +266,7 @@ const getNfts = async (address) => {
                 status = "FISH";
         }else{ status = "PLEB"}
     }
-        const mresponse = await fetchPaginatedData(`https://api.covalenthq.com/v1/sei-mainnet/bulk/transactions/${address}/`)
-        const fnft = await getFirstNft(items, address);
+    const mresponse = await fetchPaginatedData(`https://api.covalenthq.com/v1/sei-mainnet/bulk/transactions/${address}/`)
         console.log("first NFT", fnft)
         const nft = fnft.name
         return {nftBalance, status, nft, mresponse};
