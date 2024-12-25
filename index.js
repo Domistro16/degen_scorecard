@@ -117,7 +117,7 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const getSupply = async (address) => {
     const options = {
         method: "GET",
-        headers: {accept: 'application/json', 'X-API-KEY': '5cedd60c-0e3a-48e9-a0ab-f4a22634bdc8' }
+        headers: {accept: 'application/json', 'X-API-KEY': '' }
     }
     const burl = `https://seitrace.com/insights/api/v2/token/erc20?chain_id=pacific-1&contract_address=${address}`
     const response = await axios(burl, options)
@@ -281,9 +281,9 @@ client.on('messageCreate', async (msg) => {
             const canvas = createCanvas(850, 480); // Adjust the size as needed
             const ctx = canvas.getContext('2d');
 
-    const image = await loadImage('/home/domistro/txapp/NFT.jpg'); // Replace with your image path
+    const image = await loadImage('./NFT.jpg'); // Replace with your image path
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-        const overlayImage = await loadImage(`/home/domistro/txapp/${status}.png`); // Replace with your image path
+        const overlayImage = await loadImage(`./${status}.png`); // Replace with your image path
         ctx.drawImage(overlayImage, 30 , 80, 150, 150);
     
     // Set text properties
