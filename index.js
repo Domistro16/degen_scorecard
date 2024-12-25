@@ -88,11 +88,10 @@ const sei_key = process.env.KEY || ''
 const getFirstNft = async (items, address) => {
 
     let nftsArray = []
-    console.log(sei_key);
     for (const item of items){
     const options = {
         method: 'GET',
-        header: {accept: 'application/json', 'x-api-key': `${sei_key}` }
+        headers: {accept: 'application/json', 'x-api-key': `${sei_key}` }
     }
 
     const response = await axios(`https://seitrace.com/insights/api/v2/token/erc721/transfers?offset=0&chain_id=pacific-1&contract_address=${item.contract_address}&wallet_address=${address}`, options)
