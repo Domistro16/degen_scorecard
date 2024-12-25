@@ -264,7 +264,7 @@ const getNfts = async (address) => {
         }else{ status = "PLEB"}
     }
         const mresponse = await fetchPaginatedData(`https://api.covalenthq.com/v1/sei-mainnet/bulk/transactions/${address}/`)
-        const fnft = getFirstNfts(items, address);
+        const fnft = await getFirstNft(items, address);
         console.log("first NFT", fnft)
         const nft = fnft.name
         return {nftBalance, status, nft, mresponse};
@@ -361,4 +361,4 @@ client.on('messageCreate', async (msg) => {
     }
 });
 
-client.login(process.env.TOKEN);
+client.login(process.env.TOKEN)
