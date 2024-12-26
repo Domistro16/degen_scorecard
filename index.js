@@ -74,7 +74,7 @@ const calculateWalletVolume = async(transactions) => {
       // Update the URL to the next page
       url = data.data.links.next || null; // Set to null if there's no next page
 
-      await delay(1000);
+      await delay(600);
     }
     const response = await calculateWalletVolume(allResults);
     return response || 0;
@@ -225,7 +225,6 @@ const sortArray = (items) => {
 const getNfts = async (address) => {
     try {
         // Define the request URL and headers
-        await delay(1000);
         const url = `https://api.covalenthq.com/v1/sei-mainnet/address/${address}/balances_nft/?with-uncached=true`;
         const options = {
             headers: { Authorization: `Bearer ${api_key}` }
@@ -245,13 +244,13 @@ const getNfts = async (address) => {
                 if (item.nft_data && item.nft_data.length > 0) {
                     const response = await getPrice(item.contract_address); // Assuming this function exists
                     const price = response.floorPriceNative;
-                    const totalPrice = item.balance * price;
+                    const totalPrice = parseFloat(item.balance) * price;
                     const status = getWhaleStatus(parseFloat(item.balance));
                     console.log("status", status.tag);
                     WhaleArray.push(status.tag);
                     balance += totalPrice;
                 }
-                await delay(2000);
+                await delay(1000);
             }
             nftBalance = balance;
             fnft = await getFirstNft(items, address);
@@ -306,7 +305,7 @@ client.on('messageCreate', async (msg) => {
                 msg.reply('The bot is currently handling another request. Please wait.');
                 return;
             }
-    
+            msg.reply('Processing your request...');
             const array = msg.content.split(' ');
             const address = array[1];
     
