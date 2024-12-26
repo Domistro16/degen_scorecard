@@ -15,15 +15,14 @@ const WHALE_STATUS = {
     PLEB: { min: 5, tag: "PLEB" }
 };
 
-const getWhaleStatus = (balance, totalSupply) => {
-    const percentage = (balance / totalSupply) * 100; 
-    if (percentage <= WHALE_STATUS.PLEB.min || percentage == Infinity) {
+const getWhaleStatus = (balance) => { 
+    if (balance < WHALE_STATUS.PLEB.min || balance == Infinity) {
         return WHALE_STATUS.PLEB;
-    } else if (percentage <= WHALE_STATUS.FISH.min) {
+    } else if (balance <= WHALE_STATUS.FISH.min) {
         return WHALE_STATUS.FISH;
-    } else if (percentage <= WHALE_STATUS.SHARK.min) {
+    } else if (balance <= WHALE_STATUS.SHARK.min) {
         return WHALE_STATUS.SHARK;
-    } else if(percentage <= WHALE_STATUS.WHALE.min){
+    } else if(balance <= WHALE_STATUS.WHALE.min){
         return WHALE_STATUS.WHALE;
     } else {
         return WHALE_STATUS.KRAKEN
@@ -242,16 +241,15 @@ const getNfts = async (address) => {
         if (response.data.data && response.data.data.items) {
             const items = response.data.data.items;
             let balance = 0;
-            let nsupply = 0;
             for (const item of items) {
                 if (item.nft_data && item.nft_data.length > 0) {
                     const response = await getPrice(item.contract_address); // Assuming this function exists
                     const price = response.floorPriceNative;
                     const totalPrice = item.balance * price;
-                    const status = getWhaleStatus(parseFloat(item.balance), parseFloat(response.supply));
+                    const status = getWhaleStatus(parseFloat(item.balance));
+                    console.log("status", status.tag);
                     WhaleArray.push(status.tag);
                     balance += totalPrice;
-                    nsupply +=  parseFloat(response.supply);
                 }
                 await delay(2000);
             }
