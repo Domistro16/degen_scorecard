@@ -300,13 +300,25 @@ client.on('messageCreate', async (msg) => {
     }
 
     if (msg.content.startsWith('!NFT') || msg.content.startsWith('!Memecoin')) {
-        const array = msg.content.split(' ');
-        const address = array[1];
-        if (!address || address[0] !== '0' || address[1] !== 'x' || address.length !== 42) {
-            msg.reply('No Address Specified or incorrect address inputted');
-            return;
-        }
+
         if (msg.content.startsWith('!NFT')) {
+            if (isProcessing) {
+                msg.reply('The bot is currently handling another request. Please wait.');
+                return;
+            }
+    
+            const array = msg.content.split(' ');
+            const address = array[1];
+    
+            // Validate the address
+            if (!address || address[0] !== '0' || address[1] !== 'x' || address.length !== 42) {
+                msg.reply('No Address Specified or incorrect address inputted');
+                return;
+            }
+    
+            // Set the processing flag
+            isProcessing = true;
+    try{
         console.log("Received Balance Command:", msg.content);
         const response = await getNfts(address);    
         const first = address.slice(0, 4);
@@ -320,10 +332,10 @@ client.on('messageCreate', async (msg) => {
             const canvas = createCanvas(850, 480); // Adjust the size as needed
             const ctx = canvas.getContext('2d');
 
-    const image = await loadImage('./NFT.jpg'); // Replace with your image path
-    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-        const overlayImage = await loadImage(`./${status}.png`); // Replace with your image path
-        ctx.drawImage(overlayImage, 30 , 80, 150, 150);
+            const image = await loadImage('./NFT.jpg'); // Replace with your image path
+            ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+            const overlayImage = await loadImage(`./${status}.png`); // Replace with your image path
+            ctx.drawImage(overlayImage, 30 , 80, 150, 150);
     
     // Set text properties
     ctx.font = '25px Poppins';
@@ -352,10 +364,15 @@ client.on('messageCreate', async (msg) => {
     const buffer = canvas.toBuffer('image/png');    
     const attachment = new AttachmentBuilder(buffer, { name: 'scorecard.png' });
         msg.reply({ content: 'Here is your Scorecard:', files: [attachment] });
-        }
-        else{
+        
+    
+    }
+    }catch(error){
             msg.reply("Nfts not found. Error returning Nft Balance, please try again");
             return;
+        }finally {
+            // Release the processing flag
+            isProcessing = false;
         }
     }
 
