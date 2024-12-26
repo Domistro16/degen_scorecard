@@ -292,6 +292,8 @@ const getNfts = async (address) => {
 client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
+let isProcessing = false;
+
 
 client.on('messageCreate', async (msg) => {
     if (msg.content === '!Hello Seitastic') {
