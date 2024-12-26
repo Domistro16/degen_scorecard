@@ -297,7 +297,7 @@ let isProcessing = false;
 
 client.on('messageCreate', async (msg) => {
     if (msg.content === '!Hello Seitastic') {
-        msg.reply(`Hello ${msg.author.username} \n choose an option below and your address \n NFT or Memecoin \n (Example Format: NFT 0x...)`);
+        msg.reply(`Hello ${msg.author.username} \nPlease input your SEI EVM address \n(Example Format: !NFT 0x...)`);
         return;
     }
 
