@@ -513,6 +513,10 @@ client.on('messageCreate', async (msg) => {
         
     
     }
+    if(!response){
+        msg.reply("Nfts not found. Error returning Nft Balance, please try again");
+        return;
+    }
     }catch(error){
             msg.reply("Nfts not found. Error returning Nft Balance, please try again");
             return;
