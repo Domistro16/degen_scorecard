@@ -245,14 +245,17 @@ const getNfts = async (address) => {
                     const priceResponse = await getPrice(item.contract_address); // Assuming this function exists
                     const price = priceResponse.floorPriceNative;
                     const totalPrice = parseFloat(item.balance) * price;
+                    console.log(`individual: ${totalPrice}`)
                     const status = getWhaleStatus(parseFloat(item.balance));
                     console.log("status", status.tag);
                     WhaleArray.push(status.tag);
                     balance += totalPrice;
+                    console.log('balncebeingincremented', balance)
                 }
                 await delay(1000);
             }
             nftBalance = balance;
+            console.log('nftBalance', nftBalance);
             fnft = await getFirstNft(items, address);
 
         } else {
