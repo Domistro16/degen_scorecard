@@ -84,8 +84,9 @@ const sei_key = process.env.KEY || ''
 const getFirstNft = async (items, address) => {
     let nftsArray = []
     for (const item of items){
+        console.log("nft addresses: ", item.contract_address)
         if(item.supports_erc == "erc-721"){
-
+            
     const options = {
         method: 'GET',
         headers: {accept: 'application/json', 'x-api-key': `${sei_key}` }
@@ -403,8 +404,8 @@ const getNfts = async (address) => {
                 
         }catch(error){
             console.log("Error fetching ERC-1155s:", error);}
-            const items = erc_721.concat(erc_1155);
-            fnft = await getFirstNft(items, address);
+            const pitems = erc_721.concat(erc_1155);
+            fnft = await getFirstNft(pitems, address);
         let status = '';
         if(WhaleArray){
             if(WhaleArray.find((element) => element === "KRAKEN")){
