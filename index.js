@@ -325,10 +325,10 @@ client.on('messageCreate', async (msg) => {
         const response = await getNfts(address);    
         const first = address.slice(0, 4);
         const last = address.slice(-4);
-        const balance = Math.ceil(response.nftBalance * 1000) / 10000;
+        const balance = response.nftBalance
         const status = response.status;
         const fnft = response.nft;
-        const volume = Math.ceil(response.mresponse * 1000) / 10000;
+        const volume = response.mresponse  
         if(response){
             registerFont('./Poppins-Bold.ttf', {family: 'Poppins'});
             const canvas = createCanvas(850, 480); // Adjust the size as needed
