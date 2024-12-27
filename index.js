@@ -94,11 +94,13 @@ const getFirstNft = async (items, address) => {
 
     const response = await axios(`https://seitrace.com/insights/api/v2/token/erc721/transfers?offset=0&chain_id=pacific-1&contract_address=${item.contract_address}&wallet_address=${address}`, options)
     const nft = sortArray(response.data.items);
+    if(response.data.items.length > 0)
     const n = {
         name: nft.token_instance.token_name,
         timestamp: nft.timestamp
     }
     nftsArray.push(n);
+}
 } else if(item.supports_erc == "erc-1155"){
     const options = {
         method: 'GET',
@@ -106,6 +108,8 @@ const getFirstNft = async (items, address) => {
     }
 
     const response = await axios(`https://seitrace.com/insights/api/v2/token/erc1155/transfers?offset=0&chain_id=pacific-1&contract_address=${item.contract_address}&wallet_address=${address}`, options)
+    
+    if(response.data.length > 0){
     const items = response.data.items;
     const nft = sortArray(items);
     const n = {
@@ -114,7 +118,7 @@ const getFirstNft = async (items, address) => {
     }
     nftsArray.push(n);
 }
-    
+}
     await delay(500);
 }
     const firstNft = sortArray(nftsArray);
