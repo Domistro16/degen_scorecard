@@ -79,12 +79,12 @@ const calculateWalletVolume = async(transactions) => {
     const response = await calculateWalletVolume(allResults);
     return response || 0;
   }
+  
 const sei_key = process.env.KEY || ''
 const getFirstNft = async (items, address) => {
     let nftsArray = []
     for (const item of items){
-        console.log("item", item.supports_erc)
-        if(item.supports_erc.includes("erc721")){
+        if(item.supports_erc == "erc-721"){
 
     const options = {
         method: 'GET',
@@ -98,7 +98,7 @@ const getFirstNft = async (items, address) => {
         timestamp: nft.timestamp
     }
     nftsArray.push(n);
-} else if(item.supports_erc.includes("erc1155")){
+} else if(item.supports_erc == "erc-1155"){
     const options = {
         method: 'GET',
         headers: {accept: 'application/json', 'x-api-key': `${sei_key}` }
@@ -121,10 +121,12 @@ const getFirstNft = async (items, address) => {
 
 }
 const getPrice = async (address) => {
+    await delay(500);
     const options = {
         method: 'GET',
         headers: {accept: '*/*', 'x-api-key': `${key|| ''}`}
     };
+    console.log(address);
     const url = `https://api-sei.reservoir.tools/collections/v7?id=${address}`;
     const response = await axios(url, options);
 
@@ -142,6 +144,7 @@ const getPrice = async (address) => {
     const supply = parseFloat(collection.supply);
     console.log("ssupply:", supply)
     console.log(floorPriceNative);
+
     return { floorPriceNative, supply };
 };
 
@@ -223,44 +226,185 @@ const sortArray = (items) => {
 
 
 const getNfts = async (address) => {
+
+
     try {
-        // Define the request URL and headers
-        const url = `https://api.covalenthq.com/v1/sei-mainnet/address/${address}/balances_nft/?with-uncached=true`;
-        const options = {
-            headers: { Authorization: `Bearer ${api_key}` }
-        };
-
-        // Make the API call with axios
-        const response = await axios.get(url, options);
-
-
         let nftBalance = 0;
         let WhaleArray = [];
+        let erc_721 = [];
+        let erc_1155 = [];
         let fnft;
-        if (response.data.data && response.data.data.items) {
-            const items = response.data.data.items;
+        let seiAddress;
+        try{
+        // Define the request URL and headers
+        const url = `https://seitrace.com/insights/api/v2/token/erc721/balances?offset=0&chain_id=pacific-1&address=${address}`;
+        const options = {
+            method: 'GET',
+            headers: {accept: 'application/json', 'x-api-key': `${sei_key}` }
+        }
+        // Make the API call with axios
+        const response = await axios.get(url, options)
+        let items;
+        if(response.data && response.data.items){
+            items = response.data.items;
+        }
+        
+        async function fetchAllPages(items) {
+            let hasNextPage = true;
+            let currentParams = {
+                offset: 50,
+                limit: 50,
+            };
+            const apiUrl = `https://seitrace.com/insights/api/v2/token/erc721/balances?limit=${currentParams.limit}&offset=${currentParams.offset}&chain_id=pacific-1&address=${address}`;
+        
+            while (hasNextPage) {
+
+
+                try {
+                    const options = {
+                        method: 'GET',
+                        headers: {accept: 'application/json', 'x-api-key': `${sei_key}` }
+                    }
+                    const response = await axios.get(apiUrl, options);
+                    items = items.concat(response.data.items);
+                    if (response.data.next_page_params) {
+                        currentParams = response.data.next_page_params;
+                    } else {
+                        hasNextPage = false;
+                    }
+                    return items;
+                } catch (error) {
+                    console.error('Error fetching page:', error);
+                    throw error;
+                }
+            }
+        }
+        if(response.data.next_page_params) {
+           items = await fetchAllPages(items);
+        }
+              
+        if (response.data && items) {
+            const grouped = Object.values(items.reduce((acc, item) => {
+                if (!acc[item.token_contract]) {
+                    acc[item.token_contract] = {
+                        contract_address: item.token_contract,
+                        supports_erc: 'erc-721',
+                        items: []
+                    };
+                }
+                acc[item.token_contract].items.push(item);
+                return acc;
+            }, {})
+        );
+        console.log(grouped);
+        erc_721 = grouped;
             let balance = 0;
-            for (const item of items) {
-                if (item.nft_data && item.nft_data.length > 0) {
-                    const priceResponse = await getPrice(item.contract_address); // Assuming this function exists
+            for (const group of grouped) {
+                    const priceResponse = await getPrice(group.contract_address); // Assuming this function exists
                     const price = priceResponse.floorPriceNative;
-                    const totalPrice = parseFloat(item.balance) * price;
+                    const totalPrice = parseFloat(group.items.length) * price;
                     console.log(`individual: ${totalPrice}`)
-                    const status = getWhaleStatus(parseFloat(item.balance));
+                    const status = getWhaleStatus(parseFloat(group.items.length));
                     console.log("status", status.tag);
                     WhaleArray.push(status.tag);
                     balance += totalPrice;
                     console.log('balncebeingincremented', balance)
                 }
                 await delay(1000);
-            }
+                
+            console.log('erc721-balance', balance)
             nftBalance = balance;
             console.log('nftBalance', nftBalance);
-            fnft = await getFirstNft(items, address);
+            }
+    }catch(error){
+        console.log("Error fetching ERC-721s:", error);}
+        try{
+            // Define the request URL and headers
+            const url = `https://seitrace.com/insights/api/v2/token/erc1155/balances?offset=0&chain_id=pacific-1&address=${address}`;
+            const options = {
+                method: 'GET',
+                headers: {accept: 'application/json', 'x-api-key': `${sei_key}` }
+            }
+            // Make the API call with axios
+            const response = await axios.get(url, options)
+            let items;
+            if(response.data && response.data.items){
+                items = response.data.items;
+            }
+        async function fetchAllPages(items) {
+            let hasNextPage = true;
+            let currentParams = {
+                offset: 50,
+                limit: 50,
+            };
+            const apiUrl = `https://seitrace.com/insights/api/v2/token/erc1155/balances?limit=${currentParams.limit}&offset=${currentParams.offset}&chain_id=pacific-1&address=${address}`;
+        
+            while (hasNextPage) {
 
-        } else {
-            console.log("No items found in response data");
+
+                try {
+                    await delay(200);
+                    const options = {
+                        method: 'GET',
+                        headers: {accept: 'application/json', 'x-api-key': `${sei_key}` }
+                    }
+                    const response = await axios.get(apiUrl, options);
+                    items = items.concat(response.data.items);
+                    if (response.data.next_page_params) {
+                        currentParams = response.data.next_page_params;
+                    } else {
+                        hasNextPage = false;
+                    }
+
+                    return items;
+                } catch (error) {
+                    console.error('Error fetching page:', error);
+                    throw error;
+                }
+            }
         }
+        if(response.data.next_page_params) {
+           items = await fetchAllPages(items);
+        }
+            if (response.data && items) {
+                const grouped = Object.values(items.reduce((acc, item) => {
+                    if (!acc[item.token_contract]) {
+                        acc[item.token_contract] = {
+                            contract_address: item.token_contract,
+                            supports_erc: 'erc-1155',
+                            items: []
+                        };
+                    }
+                    acc[item.token_contract].items.push(item);
+                    return acc;
+                }, {})
+            );
+
+            erc_1155 = grouped;
+                let balance = 0;
+                for (const group of grouped) {
+                        const priceResponse = await getPrice(group.contract_address); // Assuming this function exists
+                        const price = priceResponse.floorPriceNative;
+                        const totalPrice = parseFloat(group.items.length) * price;
+                        console.log(`individual: ${totalPrice}`)
+                        console.log('tokens:', group.items.length)
+                        const status = getWhaleStatus(parseFloat(group.items.length));
+                        console.log("status", status.tag);
+                        WhaleArray.push(status.tag);
+                        balance += totalPrice;
+                        console.log('balncebeingincremented', balance)
+                    }
+                    await delay(1000);
+                    console.log('erc-1155 balance', balance)
+                nftBalance += balance;
+                console.log('nftBalance', nftBalance);
+                }
+                
+                
+        }catch(error){
+            console.log("Error fetching ERC-1155s:", error);}
+            const items = erc_721.concat(erc_1155);
+            fnft = await getFirstNft(items, address);
         let status = '';
         if(WhaleArray){
             if(WhaleArray.find((element) => element === "KRAKEN")){
