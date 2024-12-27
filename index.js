@@ -94,7 +94,7 @@ const getFirstNft = async (items, address) => {
 
     const response = await axios(`https://seitrace.com/insights/api/v2/token/erc721/transfers?offset=0&chain_id=pacific-1&contract_address=${item.contract_address}&wallet_address=${address}`, options)
     const nft = sortArray(response.data.items);
-    if(response.data.items.length > 0)
+    if(response.data.items.length > 0){
     const n = {
         name: nft.token_instance.token_name,
         timestamp: nft.timestamp
