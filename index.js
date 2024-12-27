@@ -242,8 +242,8 @@ const getNfts = async (address) => {
             let balance = 0;
             for (const item of items) {
                 if (item.nft_data && item.nft_data.length > 0) {
-                    const response = await getPrice(item.contract_address); // Assuming this function exists
-                    const price = response.floorPriceNative;
+                    const priceResponse = await getPrice(item.contract_address); // Assuming this function exists
+                    const price = priceResponse.floorPriceNative;
                     const totalPrice = parseFloat(item.balance) * price;
                     const status = getWhaleStatus(parseFloat(item.balance));
                     console.log("status", status.tag);
