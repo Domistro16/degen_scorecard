@@ -90,6 +90,7 @@ const calculateWalletVolume = async(transactions) => {
                 }
             }
     const response = await calculateWalletVolume(items);
+    console.log("volume:", response)
     return response || 0;
   }
   
