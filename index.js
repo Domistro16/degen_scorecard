@@ -65,7 +65,7 @@ const calculateWalletVolume = async(transactions) => {
                 limit: 50,
             };
             let items = [];
-            const apiUrl = `https://seitrace.com/insights/api/v2/addresses/transactions?limit=${currentParams.limit}&offset=${currentParams.offset}chain_id=pacific-1&address=${address}&status=SUCCESS`;
+            const apiUrl = `https://seitrace.com/insights/api/v2/addresses/transactions?limit=${currentParams.limit}&offset=${currentParams.offset}&chain_id=pacific-1&address=${address}&status=SUCCESS`;
             
             while (hasNextPage) {
 
