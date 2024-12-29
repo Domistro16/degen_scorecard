@@ -76,7 +76,7 @@ const calculateWalletVolume = async(transactions) => {
                     const response = await axios.get(apiUrl, options);
                     items = items.concat(response.data.items);
                     if (response.data.next_page_params) {
-                        currentParams.offset = response.data.next_page_params.offset;
+                        currentParams.offset = currentParams.offset + 50;
                         currentParams.limit = response.data.next_page_params.limit;
                     } else {
                         hasNextPage = false;
@@ -86,7 +86,6 @@ const calculateWalletVolume = async(transactions) => {
                     throw error;
                 }
 
-                await delay(3000);
             }
     const response = await calculateWalletVolume(items);
     console.log("volume:", response)
