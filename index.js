@@ -273,8 +273,6 @@ const getNfts = async (address) => {
             const apiUrl = `https://seitrace.com/insights/api/v2/token/erc721/balances?limit=${currentParams.limit}&offset=${currentParams.offset}&chain_id=pacific-1&address=${address}`;
         
             while (hasNextPage) {
-
-
                 try {
                     const options = {
                         method: 'GET',
@@ -288,12 +286,13 @@ const getNfts = async (address) => {
                     } else {
                         hasNextPage = false;
                     }
-                    return items;
                 } catch (error) {
                     console.error('Error fetching page:', error);
                     throw error;
                 }
             }
+            
+            return items;
         }
         if(response.data.next_page_params) {
            items = await fetchAllPages(items);
@@ -372,13 +371,12 @@ const getNfts = async (address) => {
                     } else {
                         hasNextPage = false;
                     }
-
-                    return items;
                 } catch (error) {
                     console.error('Error fetching page:', error);
                     throw error;
                 }
             }
+            return items;
         }
         if(response.data.next_page_params) {
            items = await fetchAllPages(items);
