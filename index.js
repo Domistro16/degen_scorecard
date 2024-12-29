@@ -59,7 +59,7 @@ const calculateWalletVolume = async(transactions) => {
   }
 
   async function fetchPaginatedData(address) {
-    let hasNextPage = true;
+            let hasNextPage = true;
             let currentParams = {
                 offset: 0,
                 limit: 50,
@@ -68,8 +68,6 @@ const calculateWalletVolume = async(transactions) => {
             const apiUrl = `https://seitrace.com/insights/api/v2/addresses/transactions?limit=${currentParams.limit}&offset=${currentParams.offset}&chain_id=pacific-1&address=${address}&status=SUCCESS`;
             
             while (hasNextPage) {
-
-
                 try {
                     const options = {
                         method: 'GET',
@@ -439,6 +437,7 @@ const getNfts = async (address) => {
         }else{ status = "PLEB"}
     }
     const mresponse = await fetchPaginatedData(address)
+    console.log(mresponse)
         let nft = '';
         if(fnft != undefined){
              nft = fnft.name
