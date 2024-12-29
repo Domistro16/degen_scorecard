@@ -15,6 +15,9 @@ const WHALE_STATUS = {
     PLEB: { min: 5, tag: "PLEB" }
 };
 
+
+const sei_key = process.env.KEY || ''
+
 const getWhaleStatus = (balance) => { 
     if (balance < WHALE_STATUS.PLEB.min || balance == Infinity) {
         return WHALE_STATUS.PLEB;
@@ -55,32 +58,41 @@ const calculateWalletVolume = async(transactions) => {
     return totalVolume;
   }
 
-  async function fetchPaginatedData(initialUrl) {
-    let url = initialUrl;
-    let allResults = [];
-  
-    while (url) {
-        const options = {
-            method: 'GET',
-            headers: {Authorization: `Bearer ${api_key}`}
-          };
-          
-          const response = await axios(url, options)
-          const data = response.data;
-  
-      // Process the current page's data
-      allResults = allResults.concat(data.data.items);
-  
-      // Update the URL to the next page
-      url = data.data.links.next || null; // Set to null if there's no next page
+  async function fetchPaginatedData(address) {
+    let hasNextPage = true;
+            let currentParams = {
+                offset: 0,
+                limit: 50,
+            };
+            let items = [];
+            const apiUrl = `https://seitrace.com/insights/api/v2/addresses/transactions?limit=${currentParams.limit}&offset=${currentParams.offset}chain_id=pacific-1&address=${address}&status=SUCCESS`;
+            
+            while (hasNextPage) {
 
-      await delay(600);
-    }
-    const response = await calculateWalletVolume(allResults);
+
+                try {
+                    const options = {
+                        method: 'GET',
+                        headers: {accept: 'application/json', 'x-api-key': `${sei_key}` }
+                    }
+                    const response = await axios.get(apiUrl, options);
+                    items = items.concat(response.data.items);
+                    if (response.data.next_page_params) {
+                        currentParams.offset = response.data.next_page_params.offset;
+                        currentParams.limit = response.data.next_page_params.limit;
+                    } else {
+                        hasNextPage = false;
+                    }
+                    return items;
+                } catch (error) {
+                    console.error('Error fetching page:', error);
+                    throw error;
+                }
+            }
+    const response = await calculateWalletVolume(items);
     return response || 0;
   }
   
-const sei_key = process.env.KEY || ''
 const getFirstNft = async (items, address) => {
     let nftsArray = []
     for (const item of items){
@@ -273,7 +285,8 @@ const getNfts = async (address) => {
                     const response = await axios.get(apiUrl, options);
                     items = items.concat(response.data.items);
                     if (response.data.next_page_params) {
-                        currentParams = response.data.next_page_params;
+                        currentParams.offset = response.data.next_page_params.offset;
+                        currentParams.limit = response.data.next_page_params.limit;
                     } else {
                         hasNextPage = false;
                     }
@@ -356,7 +369,8 @@ const getNfts = async (address) => {
                     const response = await axios.get(apiUrl, options);
                     items = items.concat(response.data.items);
                     if (response.data.next_page_params) {
-                        currentParams = response.data.next_page_params;
+                        currentParams.offset = response.data.next_page_params.offset;
+                        currentParams.limit = response.data.next_page_params.limit;
                     } else {
                         hasNextPage = false;
                     }
@@ -384,7 +398,7 @@ const getNfts = async (address) => {
                     return acc;
                 }, {})
             );
-
+            
             erc_1155 = grouped;
                 let balance = 0;
                 for (const group of grouped) {
