@@ -86,7 +86,7 @@ const calculateWalletVolume = async(transactions) => {
                     throw error;
                 }
 
-                await delay(300);
+                await delay(3000);
             }
     const response = await calculateWalletVolume(items);
     console.log("volume:", response)
