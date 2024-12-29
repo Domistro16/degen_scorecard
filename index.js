@@ -437,7 +437,7 @@ const getNfts = async (address) => {
                 status = "FISH";
         }else{ status = "PLEB"}
     }
-    const mresponse = await fetchPaginatedData(`https://api.covalenthq.com/v1/sei-mainnet/bulk/transactions/${address}/`)
+    const mresponse = await fetchPaginatedData(address)
         let nft = '';
         if(fnft != undefined){
              nft = fnft.name
