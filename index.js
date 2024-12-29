@@ -81,7 +81,6 @@ const calculateWalletVolume = async(transactions) => {
                     } else {
                         hasNextPage = false;
                     }
-                    return items;
                 } catch (error) {
                     console.error('Error fetching page:', error);
                     throw error;
