@@ -85,6 +85,8 @@ const calculateWalletVolume = async(transactions) => {
                     console.error('Error fetching page:', error);
                     throw error;
                 }
+
+                await delay(300);
             }
     const response = await calculateWalletVolume(items);
     console.log("volume:", response)
