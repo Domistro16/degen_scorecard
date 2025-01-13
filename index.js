@@ -297,7 +297,7 @@ const getNfts = async (address) => {
                 const url = `https://api-mainnet.magiceden.io/v3/rtp/sei/users/0xa1255A2d90052B563F7bc09138f0EB67628050d7/collections/v4?includeOnSaleCount=true&excludeSpam=true&limit=100&offset=0`;
                 const options = {
                     method: 'GET',
-                    headers: {accept: '*/*'}
+                    headers: {accept: '*/*', Authorization: 'Bearer YOUR_API_KEY'}
                 }
                 const response = await axios(url, options);                
                 fnft = response.data.collections[0];
