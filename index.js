@@ -254,7 +254,7 @@ const getNfts = async (address) => {
             headers: {accept: 'application/json'}
         }
         const response = await axios(url, options);
-        nftBalance = response.estimated_value;
+        nftBalance = response.data.estimated_value;
 
 
         try{
