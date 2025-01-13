@@ -294,9 +294,9 @@ const getNfts = async (address) => {
 
 
             try{
-                const url = `https://api-mainnet.magiceden.io/v3/rtp/sei/users/0xa1255A2d90052B563F7bc09138f0EB67628050d7/collections/v4?`;
                 const options = {
                     method: 'GET',
+                    url: `https://api-mainnet.magiceden.io/v3/rtp/sei/users/0xa1255A2d90052B563F7bc09138f0EB67628050d7/collections/v4?`,
                     headers: {accept: 'application/json'}
                 }
                 const response = await axios(url, options);                
