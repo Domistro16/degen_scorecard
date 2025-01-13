@@ -296,7 +296,7 @@ const getNfts = async (address) => {
             try{
                 const options = {
                     method: 'GET',
-                    url: `https://api-mainnet.magiceden.io/v3/rtp/sei/users/0xa1255A2d90052B563F7bc09138f0EB67628050d7/collections/v4?`,
+                    url: `https://api-mainnet.magiceden.io/v3/rtp/sei/users/0xa1255A2d90052B563F7bc09138f0EB67628050d7/tokens/v10?&includeLastSale=true&excludeSpam=true&limit=50&sortBy=acquiredAt&sortDirection=desc`,
                     headers: {accept: 'application/json, text/plain, */*'}
                 }
                 const response = await axios(options);                
