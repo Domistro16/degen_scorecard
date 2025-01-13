@@ -248,18 +248,24 @@ const getNfts = async (address) => {
         let fnft;
         try{
         // Define the request URL and headers
-        const url = `https://api.pallet.exchange/api/v1/user/${address}?network=mainnet&include_estimated_value=true`;
-
-        const response = await axios(url);
+        const url = `https://api.pallet.exchange/api/v1/user/0xa1255A2d90052B563F7bc09138f0EB67628050d7?network=mainnet&include_estimated_value=true`;
+        const options = {
+            method: 'GET',
+            headers: {accept: 'application/json'}
+        }
+        const response = await axios(url, options);
         nftBalance = response.estimated_value;
 
 
         try{
 
-            const url = `https://api.pallet.exchange/api/v3/user/${address}/tokens?network=mainnet`;
+            const url = `https://api.pallet.exchange/api/v1/user/0xa1255A2d90052B563F7bc09138f0EB67628050d7?network=mainnet&include_estimated_value=true`;
     
-    
-            const response = await axios(url); 
+            const options = {
+                method: 'GET',
+                headers: {accept: 'application/json'}
+            }
+            const response = await axios(url, options); 
             const items = response.data.tokens;
             if (response.data && response.data.tokens) {
                 const grouped = Object.values(items.reduce((acc, item) => {
@@ -286,9 +292,12 @@ const getNfts = async (address) => {
         }catch(error){
             console.log("Error getting Balance", error);}
             try{
-                const url = `https://api-mainnet.magiceden.io/v3/rtp/sei/users/${address}/collections/v4?includeOnSaleCount=true&excludeSpam=true&limit=100&offset=0`;
-
-                const response = await axios(url);                
+                const url = `https://api.pallet.exchange/api/v1/user/0xa1255A2d90052B563F7bc09138f0EB67628050d7?network=mainnet&include_estimated_value=true`;
+                const options = {
+                    method: 'GET',
+                    headers: {accept: 'application/json'}
+                }
+                const response = await axios(url, options);                
                 fnft = response.collections[0];
             }
             catch(error){
