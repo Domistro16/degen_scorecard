@@ -259,7 +259,7 @@ const getNfts = async (address) => {
 
         try{
 
-            const url = `https://api.pallet.exchange/api/v3/user/sei1e7awqu7st2wrucycs5gndv7d2c2fz6djcc5k7h/tokens?network=mainnet`;
+            const url = `https://api.pallet.exchange/api/v3/user/0xa1255A2d90052B563F7bc09138f0EB67628050d7/tokens?network=mainnet`;
     
             const options = {
                 method: 'GET',
@@ -297,7 +297,7 @@ const getNfts = async (address) => {
                 const options = {
                     method: 'GET',
                     url: `https://api-mainnet.magiceden.io/v3/rtp/sei/users/0xa1255A2d90052B563F7bc09138f0EB67628050d7/collections/v4?`,
-                    headers: {accept: 'application/json'}
+                    headers: {accept: 'application/json, text/plain, */*'}
                 }
                 const response = await axios(options);                
                 fnft = response.data.collections[0];
