@@ -322,7 +322,7 @@ const getNfts = async (address) => {
         else{
             nft = ""
         }
-        return {nftBalance, status, nft, mresponse};
+        return {nftBalance, status, nft};
     } catch (error) {
         console.error("Error fetching NFTs:", error);
         return 0;
@@ -368,7 +368,7 @@ client.on('messageCreate', async (msg) => {
         const balance = response.nftBalance
         const status = response.status;
         const fnft = response.nft;
-        const volume = response.mresponse  
+        const volume = 0  
         if(response){
             registerFont('./Poppins-Bold.ttf', {family: 'Poppins'});
             const canvas = createCanvas(850, 480); // Adjust the size as needed
