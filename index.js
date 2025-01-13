@@ -291,6 +291,8 @@ const getNfts = async (address) => {
             }
         }catch(error){
             console.log("Error getting Balance", error);}
+
+
             try{
                 const url = `https://api.pallet.exchange/api/v1/user/0xa1255A2d90052B563F7bc09138f0EB67628050d7?network=mainnet&include_estimated_value=true`;
                 const options = {
@@ -298,7 +300,7 @@ const getNfts = async (address) => {
                     headers: {accept: 'application/json'}
                 }
                 const response = await axios(url, options);                
-                fnft = response.collections[0];
+                fnft = response.data.collections[0];
             }
             catch(error){
                     console.log('Error fetching first NFT', error)
