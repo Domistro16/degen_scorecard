@@ -294,10 +294,20 @@ const getNfts = async (address) => {
 
 
             try{
+
+                const headers = {
+                        'accept': 'application/json, text/plain, */*',
+                        'accept-encoding':'gzip, deflate, br, zstd',
+                        'accept-language': 'en-US,en;q=0.9',
+                        'origin': 'https://magiceden.io',
+                        'priority': 'u=1, i',
+                        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
+                    
+                }
                 const options = {
                     method: 'GET',
                     url: `https://api-mainnet.magiceden.io/v3/rtp/sei/users/0xa1255A2d90052B563F7bc09138f0EB67628050d7/tokens/v10?&includeLastSale=true&excludeSpam=true&limit=50&sortBy=acquiredAt&sortDirection=desc`,
-                    headers: {accept: 'application/json, text/plain, */*'}
+                    headers
                 }
                 const response = await axios(options);                
                 fnft = response.data.collections[0];
