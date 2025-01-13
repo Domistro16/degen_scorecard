@@ -251,6 +251,7 @@ const getNfts = async (address) => {
         const url = `https://api.pallet.exchange/api/v1/user/${address}?network=mainnet&include_estimated_value=true`;
         const options = {
             method: 'GET',
+            headers:{accept:'application/json'}
         };
 
         const response = await axios(url, options);
@@ -262,6 +263,7 @@ const getNfts = async (address) => {
             const url = `https://api.pallet.exchange/api/v3/user/${address}/tokens?network=mainnet`;
             const options = {
                 method: 'GET',
+                headers:{accept: 'application/json'}
             };
     
             const response = await axios(url, options); 
@@ -294,6 +296,7 @@ const getNfts = async (address) => {
                 const url = `https://api-mainnet.magiceden.io/v3/rtp/sei/users/${address}/collections/v4?includeOnSaleCount=true&excludeSpam=true&limit=100&offset=0`;
                 const options = {
                     method: 'GET',
+                    headers:{accept: 'application/json'}
                 };
 
                 const response = await axios(url, options);                
