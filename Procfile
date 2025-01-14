@@ -1,1 +1,1 @@
-worker: docker run DockerFile
+worker: node index.js

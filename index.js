@@ -298,8 +298,6 @@ const getNfts = async (address) => {
 
                 const browser = await puppeteer.launch();
                 const page = await browser.newPage();
-
-                await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
                 await page.goto('https://api-mainnet.magiceden.io/v3/rtp/sei/users/0xa1255A2d90052B563F7bc09138f0EB67628050d7/collections/v4?%27');
 
                 const content = await page.content();
