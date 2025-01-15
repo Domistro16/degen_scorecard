@@ -3,6 +3,7 @@ import axios from 'axios';
 import { createCanvas, loadImage, registerFont } from 'canvas';
 import 'dotenv/config';
 import puppeteer from 'puppeteer'
+import { chromium } from 'playwright' 
 
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
@@ -296,9 +297,10 @@ const getNfts = async (address) => {
 
             try{
 
-                const browser = await puppeteer.launch();
+                const browser = await chromium.launch({
+                    headless: true, });
                 const page = await browser.newPage();
-                await page.goto('https://api-mainnet.magiceden.io/v3/rtp/sei/users/0xa1255A2d90052B563F7bc09138f0EB67628050d7/collections/v4?%27');
+                await page.goto('https://api-mainnet.magiceden.io/v3/rtp/sei/users/0xa1255A2d90052B563F7bc09138f0EB67628050d7/collections/v4?', { timeout: 60000, waitUntil: 'load' });
 
                 const content = await page.content();
                

@@ -18,7 +18,9 @@
         "discord": "^0.8.2",
         "discord.js": "^14.16.3",
         "dotenv": "^16.4.5",
+        "nightmare": "^3.0.2",
         "nodemon": "^3.1.9",
+        "playwright": "^1.49.1",
         "puppeteer": "^24.0.0"
     }
 }
