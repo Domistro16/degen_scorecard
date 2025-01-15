@@ -1,1 +1,1 @@
-worker: node index.js
+worker: npx playwright install --with deps node index.js
